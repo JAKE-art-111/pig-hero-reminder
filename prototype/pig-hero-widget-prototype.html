@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>猪猪侠日程提醒 · 桌面挂件原型</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='52' r='40' fill='%23FFC2CD'/%3E%3Cpath d='M12 46 Q50 2 88 46 L88 34 Q50 18 12 34Z' fill='%23E8352B'/%3E%3Cellipse cx='50' cy='62' rx='20' ry='14' fill='%23FFE3D6'/%3E%3Ccircle cx='43' cy='62' r='3.4' fill='%23C4473F'/%3E%3Ccircle cx='57' cy='62' r='3.4' fill='%23C4473F'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+/* ============ 设计变量 ============ */
+:root{
+  --pig-red:#E8352B; --pig-red-dark:#C4271F; --pig-red-soft:#FF6B5E;
+  --pig-yellow:#FFD23F; --pig-yellow-deep:#F5B800;
+  --pig-pink:#FFC2CD; --pig-pink-deep:#FF9BAC;
+  --pig-skin:#FFC9B8; --pig-nose:#FFE3D6;
+  --ink:#3A2A2A; --ink-soft:#7A6666;
+  --card:#FFFFFF;
+  --sky-top:#3E9BF0; --sky-mid:#7FC1FF; --sky-low:#BFE6FF;
+  --grass:#63C95F; --grass-deep:#44AB47;
+  --font-round:'ZCOOL KuaiLe','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-body:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:var(--font-body); color:var(--ink);
+  background:radial-gradient(1200px 700px at 20% -10%,#FFE9B8 0%,#FFD8A8 38%,#FFC6B8 70%,#FFB7C8 100%);
+  display:flex; align-items:center; justify-content:center; gap:42px;
+  min-height:100vh; padding:24px; overflow:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input{font-family:inherit;}
+
+/* ============ 两侧说明栏（仅宽屏） ============ */
+.side{width:290px;flex:none;display:flex;flex-direction:column;gap:18px;}
+.side-card{
+  background:rgba(255,255,255,.72); backdrop-filter:blur(8px);
+  border-radius:22px; padding:22px 22px 20px;
+  box-shadow:0 10px 30px rgba(190,80,60,.14);
+  border:2px solid rgba(255,255,255,.85);
+}
+.side h1{font-family:var(--font-round);font-size:27px;line-height:1.25;color:var(--pig-red-dark);}
+.side h1 .y{color:var(--pig-yellow-deep);}
+.side p{font-size:13.5px;line-height:1.75;color:#6b5450;margin-top:10px;}
+.side h2{font-family:var(--font-round);font-size:18px;color:var(--ink);margin-bottom:12px;}
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:13px;}
+.step:last-child{margin-bottom:0;}
+.step-num{
+  flex:none;width:26px;height:26px;border-radius:50%;
+  background:var(--pig-red);color:#fff;font-family:var(--font-round);font-size:15px;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+  box-shadow:0 3px 0 var(--pig-red-dark);
+}
+.step-txt b{display:block;font-size:14px;}
+.step-txt span{font-size:12.5px;color:var(--ink-soft);line-height:1.55;}
+.tag{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  background:#FFF2D6;color:#A8741A;border-radius:999px;padding:5px 12px;margin-top:12px;
+}
+@media (max-width:1180px){.side{display:none;}}
+
+/* ============ 手机外壳 ============ */
+.phone{
+  position:relative; flex:none;
+  width:390px; height:844px; max-height:96vh; aspect-ratio:390/844;
+  background:#141414; border-radius:52px; padding:11px;
+  box-shadow:0 40px 80px rgba(120,40,40,.35),0 8px 24px rgba(0,0,0,.25),
+  inset 0 0 0 2px #2c2c2c;
+}
+.phone-screen{
+  position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 52%,var(--sky-low) 74%,var(--grass) 74.2%,var(--grass-deep) 100%);
+}
+/* 刘海 */
+.notch{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:118px;height:30px;background:#141414;border-radius:0 0 18px 18px;z-index:60;
+}
+/* 云 */
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.c1{width:80px;height:26px;top:96px;left:34px;animation:drift 26s linear infinite;}
+.c1::before{width:34px;height:34px;top:-16px;left:14px;}
+.c1::after{width:26px;height:26px;top:-11px;right:14px;}
+.c2{width:64px;height:22px;top:188px;right:26px;animation:drift 34s linear infinite reverse;}
+.c2::before{width:28px;height:28px;top:-13px;left:10px;}
+.c2::after{width:22px;height:22px;top:-9px;right:10px;}
+@keyframes drift{0%{transform:translateX(-12px);}50%{transform:translateX(26px);}100%{transform:translateX(-12px);}}
+
+/* ============ 状态栏 ============ */
+.statusbar{
+  position:relative;z-index:30;height:50px;display:flex;align-items:center;
+  justify-content:space-between;padding:14px 30px 0;color:#fff;font-weight:700;font-size:14px;
+  text-shadow:0 1px 2px rgba(0,0,0,.18);
+}
+.statusbar .sb-icons{display:flex;gap:6px;align-items:center;}
+
+/* ============ 桌面 ============ */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;}
+#screen-home{z-index:1;}
+.home-scroll{flex:1;display:flex;flex-direction:column;padding:6px 18px 24px;}
+
+/* ---- 挂件 ---- */
+.widget-wrap{margin-top:14px;animation:dropIn .7s cubic-bezier(.2,1.3,.4,1) both;}
+@keyframes dropIn{from{opacity:0;transform:translateY(-26px) scale(.92);}to{opacity:1;transform:none;}}
+.widget{
+  position:relative;width:100%;border-radius:30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,247,240,.9));
+  box-shadow:0 12px 30px rgba(60,90,140,.22),inset 0 2px 0 rgba(255,255,255,.9);
+  padding:14px 16px 14px 12px;display:flex;align-items:center;gap:12px;
+  border:2px solid rgba(255,255,255,.95);
+  transition:transform .18s ease;
+}
+.widget:active{transform:scale(.97);}
+.widget-pig{flex:none;width:92px;height:92px;animation:bob 3.2s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.5deg);}50%{transform:translateY(-5px) rotate(1.5deg);}}
+.widget-info{flex:1;min-width:0;}
+.widget-clock{font-family:var(--font-round);font-size:40px;line-height:1;color:var(--pig-red-dark);letter-spacing:1px;}
+.widget-date{font-size:11.5px;color:var(--ink-soft);font-weight:700;margin-top:3px;}
+.widget-next{
+  margin-top:8px;background:#FFF2E8;border-radius:12px;padding:6px 10px;
+  font-size:12.5px;color:#8a5a44;display:flex;align-items:center;gap:7px;line-height:1.35;
+}
+.widget-next .dot{flex:none;width:7px;height:7px;border-radius:50%;background:var(--pig-red);animation:pulse 1.6s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,53,43,.45);}50%{box-shadow:0 0 0 6px rgba(232,53,43,0);}}
+.widget-next b{color:var(--pig-red-dark);font-weight:900;}
+.widget-hint{font-size:10.5px;color:#b3a09a;margin-top:5px;text-align:right;}
+/* 挂件旁的对话气泡 */
+.speech{
+  position:absolute;z-index:20;top:-44px;left:18px;max-width:230px;
+  background:var(--pig-red);color:#fff;font-size:13px;font-weight:700;line-height:1.45;
+  padding:9px 14px;border-radius:16px 16px 16px 4px;
+  box-shadow:0 8px 18px rgba(200,40,30,.35);
+  opacity:0;transform:translateY(8px) scale(.9);transform-origin:left bottom;
+  transition:.35s cubic-bezier(.2,1.4,.4,1);pointer-events:none;
+}
+.speech.show{opacity:1;transform:none;}
+.speech::after{
+  content:'';position:absolute;left:18px;bottom:-7px;
+  border:7px solid transparent;border-top-color:var(--pig-red);border-left-color:var(--pig-red);
+}
+
+/* ---- 桌面图标网格 ---- */
+.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 10px;margin-top:30px;}
+.app{display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.35);font-size:11.5px;font-weight:500;}
+.app-ico{
+  width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 5px 12px rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.35);
+}
+.app-ico svg{width:29px;height:29px;}
+.dock{
+  margin-top:auto;height:84px;border-radius:30px;
+  background:rgba(255,255,255,.28);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:space-around;padding:0 18px;
+  border:1.5px solid rgba(255,255,255,.45);
+}
+.dock .app{text-shadow:none;}
+.dock .app span{display:none;}
+
+/* ============ 设置页 ============ */
+#screen-settings{
+  z-index:40;background:#FFF7F0;transform:translateX(105%);
+  transition:transform .38s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;
+}
+#screen-settings.open{transform:none;}
+.set-top{
+  background:linear-gradient(135deg,var(--pig-red),#F4573D);
+  padding:52px 20px 16px;display:flex;align-items:center;gap:12px;color:#fff;
+  border-radius:0 0 26px 26px;box-shadow:0 6px 16px rgba(200,50,40,.28);
+}
+.set-top .mini-pig{width:46px;height:46px;flex:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2));}
+.set-top .ttl b{font-family:var(--font-round);font-size:21px;display:block;letter-spacing:.5px;}
+.set-top .ttl span{font-size:12px;opacity:.92;}
+.set-body{flex:1;overflow-y:auto;padding:16px 16px 28px;display:flex;flex-direction:column;gap:14px;}
+.card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 4px 14px rgba(180,90,60,.08);}
+.card-h{font-family:var(--font-round);font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-h::before{content:'';width:6px;height:16px;border-radius:3px;background:var(--pig-red);}
+/* 提醒条目 */
+.r-item{
+  display:flex;align-items:center;gap:11px;padding:11px 4px;
+  border-bottom:1.5px dashed #F4E2D6;
+}
+.r-item:last-child{border-bottom:none;}
+.r-time{font-family:var(--font-round);font-size:21px;color:var(--pig-red-dark);min-width:64px;}
+.r-content{flex:1;font-size:14px;font-weight:500;word-break:break-all;}
+.r-item.off .r-time,.r-item.off .r-content{color:#C3B4AE;text-decoration:line-through;}
+.r-del{
+  flex:none;width:36px;height:36px;border-radius:50%;background:#FFECEA;color:#E8604F;
+  font-size:18px;display:flex;align-items:center;justify-content:center;
+}
+.r-del:active{background:#ffd9d4;}
+.switch{position:relative;width:44px;height:26px;flex:none;}
+.switch input{opacity:0;width:100%;height:100%;position:absolute;z-index:2;cursor:pointer;}
+.switch i{
+  position:absolute;inset:0;background:#E5D6CE;border-radius:999px;transition:.25s;
+}
+.switch i::after{
+  content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:.25s;
+}
+.switch input:checked + i{background:var(--pig-red);}
+.switch input:checked + i::after{transform:translateX(18px);}
+.empty-tip{font-size:13px;color:#B39E96;text-align:center;padding:14px 0;line-height:1.7;}
+/* 添加表单 */
+.add-row{display:flex;gap:10px;align-items:center;}
+.add-row input[type=time]{
+  width:118px;flex:none;border:2px solid #F3DCCB;border-radius:14px;padding:10px;font-size:16px;
+  font-weight:700;color:var(--pig-red-dark);background:#FFFBF7;outline:none;text-align:center;
+}
+.add-row input[type=time]:focus{border-color:var(--pig-red-soft);}
+.add-row input[type=text]{
+  flex:1;min-width:0;border:2px solid #F3DCCB;border-radius:14px;padding:11px 13px;font-size:16px;
+  background:#FFFBF7;outline:none;
+}
+.add-row input[type=text]:focus{border-color:var(--pig-red-soft);}
+.btn-add{
+  flex:none;width:46px;height:46px;border-radius:15px;background:var(--pig-red);color:#fff;
+  font-size:26px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 0 var(--pig-red-dark);
+}
+.btn-add:active{transform:translateY(3px);box-shadow:none;}
+.btn-test{
+  width:100%;margin-top:14px;border-radius:15px;padding:13px;font-size:15px;font-weight:900;
+  background:linear-gradient(135deg,var(--pig-yellow),var(--pig-yellow-deep));color:#7A4B00;
+  box-shadow:0 4px 0 #D99E00;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-test:active{transform:translateY(3px);box-shadow:none;}
+.btn-test svg{width:19px;height:19px;}
+.set-note{font-size:11.5px;color:#B39E96;line-height:1.75;text-align:center;padding:0 8px;}
+/* 返回条 */
+.set-back{
+  margin-top:auto;display:block;width:calc(100% - 32px);margin:16px 16px 0;border-radius:16px;
+  padding:14px;background:var(--pig-red);color:#fff;font-size:16px;font-weight:900;
+  box-shadow:0 4px 0 var(--pig-red-dark);
+}
+.set-back:active{transform:translateY(3px);box-shadow:none;margin-top:19px;}
+
+/* ============ 通知横幅 ============ */
+.banner{
+  position:absolute;z-index:55;top:50px;left:14px;right:14px;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);
+  border-radius:24px;padding:12px 14px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 14px 36px rgba(80,40,40,.3);
+  transform:translateY(-150%);transition:transform .5s cubic-bezier(.2,1.2,.3,1);
+}
+.banner.show{transform:translateY(0);}
+.banner-pig{width:46px;height:46px;flex:none;animation:shake .6s ease;}
+@keyframes shake{0%,100%{transform:rotate(0);}20%{transform:rotate(-12deg) scale(1.08);}40%{transform:rotate(10deg);}60%{transform:rotate(-6deg);}80%{transform:rotate(4deg);}}
+.banner-txt{flex:1;min-width:0;}
+.banner-txt .b-top{display:flex;align-items:baseline;gap:8px;}
+.banner-txt b{font-size:14.5px;color:var(--pig-red-dark);font-family:var(--font-round);}
+.banner-txt small{font-size:11px;color:#A99690;}
+.banner-txt p{font-size:14px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.banner-close{flex:none;width:36px;height:36px;border-radius:50%;background:#F3EAE5;color:#998;font-size:16px;}
+
+/* 小猪 SVG 共用（尺寸由具体容器类控制） */
+.pig-svg{display:block;overflow:visible;}
+.pig-eyes{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite;}
+@keyframes blink{0%,93%,100%{transform:scaleY(1);}96%{transform:scaleY(.08);}}
+.pig-cape{transform-box:fill-box;transform-origin:top center;animation:cape 2.8s ease-in-out infinite;}
+@keyframes cape{0%,100%{transform:skewX(0);}50%{transform:skewX(4deg);}}
+
+@media (max-width:480px){
+  body{padding:0;background:linear-gradient(180deg,var(--sky-top),var(--sky-mid 55%),var(--grass));}
+  .phone{width:100vw;height:100vh;max-height:none;border-radius:0;padding:0;}
+  .phone-screen{border-radius:0;}
+  .notch{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 左侧说明 ========== -->
+<aside class="side">
+  <div class="side-card">
+    <h1>猪猪侠<span class="y">日程提醒</span><br>手机桌面挂件</h1>
+    <p>一只住在手机桌面上的小猪英雄：它替你盯着时间，每天到了你设定的点，就会弹出通知喊你去做该做的事。</p>
+    <span class="tag">当前页面为可交互外观原型</span>
+  </div>
+  <div class="side-card">
+    <h2>怎么玩</h2>
+    <div class="step"><div class="step-num">1</div><div class="step-txt"><b>点桌面上的挂件</b><span>进入猪猪侠的提醒设置页</span></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-txt"><b>设定时间和事情</b><span>例如 07:30 起床、21:30 睡觉，可开关、可删除</span></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-txt"><b>到点自动提醒</b><span>顶部弹出小猪通知，挂件同步喊话</span></div></div>
+  </div>
+</aside>
+
+<!-- ========== 手机 ========== -->
+<div class="phone">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- 小猪英雄 SVG 定义 -->
+    <svg width="0" height="0" style="position:absolute" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <symbol id="pigHero" viewBox="0 0 200 210">
+          <!-- 披风 -->
+          <g class="pig-cape">
+            <path d="M58 92 C34 118 38 170 46 184 C66 164 80 156 88 153 L112 153 C120 156 134 164 154 184 C162 170 166 118 142 92 Z" fill="#D42B22"/>
+            <path d="M88 153 L100 158 L112 153 L108 182 Q100 188 92 182 Z" fill="#B81F18" opacity=".55"/>
+          </g>
+          <!-- 手臂 -->
+          <ellipse cx="57" cy="166" rx="13" ry="16" fill="#F5B800"/>
+          <ellipse cx="143" cy="166" rx="13" ry="16" fill="#F5B800"/>
+          <!-- 身体（黄衣） -->
+          <ellipse cx="100" cy="172" rx="45" ry="37" fill="#FFD23F"/>
+          <ellipse cx="100" cy="172" rx="45" ry="37" fill="none" stroke="#E8A800" stroke-width="2.5"/>
+          <!-- 领口 -->
+          <path d="M82 142 Q100 154 118 142 L118 150 Q100 161 82 150 Z" fill="#E8352B"/>
+          <!-- 胸口徽章 -->
+          <circle cx="100" cy="176" r="16" fill="#E8352B"/>
+          <ellipse cx="100" cy="176" rx="9" ry="6.6" fill="#fff"/>
+          <circle cx="96.5" cy="176" r="1.7" fill="#E8352B"/>
+          <circle cx="103.5" cy="176" r="1.7" fill="#E8352B"/>
+          <!-- 耳朵 -->
+          <path d="M62 54 Q54 18 80 26 Q88 37 80 58 Z" fill="#FFC2CD"/>
+          <path d="M68 48 Q66 30 77 34 Q81 41 76 51 Z" fill="#FF9BAC"/>
+          <path d="M138 54 Q146 18 120 26 Q112 37 120 58 Z" fill="#FFC2CD"/>
+          <path d="M132 48 Q134 30 123 34 Q119 41 124 51 Z" fill="#FF9BAC"/>
+          <!-- 脸 -->
+          <circle cx="100" cy="101" r="63" fill="#FFC2CD"/>
+          <circle cx="100" cy="101" r="63" fill="none" stroke="#F09AA8" stroke-width="2.5"/>
+          <!-- 红色英雄面罩 -->
+          <path d="M37 92 C37 43 66 29 100 29 C134 29 163 43 163 92 L139 92 C137 78 128 69 117 71 C110 72 106 80 105 89 C104 80 100 74 100 74 C100 74 96 80 95 89 C94 80 90 72 83 71 C72 69 63 78 61 92 Z" fill="#E8352B"/>
+          <circle cx="100" cy="40" r="7.5" fill="#FFD23F"/>
+          <circle cx="97.5" cy="37.5" r="2.4" fill="#FFF0B8"/>
+          <!-- 眼睛（会眨眼） -->
+          <g class="pig-eyes">
+            <ellipse cx="77" cy="85" rx="12.5" ry="10.5" fill="#fff"/>
+            <ellipse cx="123" cy="85" rx="12.5" ry="10.5" fill="#fff"/>
+            <circle cx="79.5" cy="87" r="5.6" fill="#3A2A2A"/>
+            <circle cx="120.5" cy="87" r="5.6" fill="#3A2A2A"/>
+            <circle cx="81.5" cy="84.5" r="2.1" fill="#fff"/>
+            <circle cx="122.5" cy="84.5" r="2.1" fill="#fff"/>
+          </g>
+          <!-- 腮红 -->
+          <circle cx="55" cy="119" r="8.5" fill="#FF8DA0" opacity=".55"/>
+          <circle cx="145" cy="119" r="8.5" fill="#FF8DA0" opacity=".55"/>
+          <!-- 鼻子 -->
+          <ellipse cx="100" cy="123" rx="30" ry="21.5" fill="#FFE3D6"/>
+          <ellipse cx="100" cy="123" rx="30" ry="21.5" fill="none" stroke="#F0B09C" stroke-width="2.5"/>
+          <ellipse cx="88.5" cy="124" rx="5" ry="7.2" fill="#D96A58"/>
+          <ellipse cx="111.5" cy="124" rx="5" ry="7.2" fill="#D96A58"/>
+          <!-- 嘴 -->
+          <path d="M83 149 Q100 162 117 149" fill="none" stroke="#B4453E" stroke-width="3.6" stroke-linecap="round"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- ===== 视图：手机桌面 ===== -->
+    <section class="screen" id="screen-home">
+      <div class="statusbar">
+        <span id="sbTime">09:41</span>
+        <span class="sb-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="#fff"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="#fff"><path d="M8 2.5c2 0 3.9.8 5.3 2.1l1.4-1.6A9.4 9.4 0 0 0 8 .5 9.4 9.4 0 0 0 1.3 3l1.4 1.6A7.6 7.6 0 0 1 8 2.5Zm0 4c1 0 1.9.4 2.6 1l1.4-1.6A5.9 5.9 0 0 0 8 4.5a5.9 5.9 0 0 0-4 1.4L5.4 7.5A3.9 3.9 0 0 1 8 6.5Zm0 3.6 2-2.3a2.8 2.8 0 0 0-4 0Z"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="#fff" opacity=".7"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="#fff"/><rect x="22.5" y="4" width="2" height="4" rx="1" fill="#fff" opacity=".7"/></svg>
+        </span>
+      </div>
+      <div class="cloud c1"></div>
+      <div class="cloud c2"></div>
+
+      <div class="home-scroll">
+        <div class="widget-wrap">
+          <div class="speech" id="speechBubble">该出发啦！</div>
+          <div class="widget" id="widget" role="button" aria-label="打开猪猪侠提醒设置">
+            <svg class="widget-pig pig-svg" viewBox="0 0 200 210"><use href="#pigHero" xlink:href="#pigHero"/></svg>
+            <div class="widget-info">
+              <div class="widget-clock" id="wClock">09:41</div>
+              <div class="widget-date" id="wDate">星期一 · 1月1日</div>
+              <div class="widget-next"><span class="dot"></span><span id="wNext">下一条 <b>12:00</b> 吃午饭</span></div>
+              <div class="widget-hint">轻点挂件设置提醒</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="apps">
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#5FE878,#2BB64B)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6.6 3.6 4 5a2 2 0 0 0-.7 2.2A16.8 16.8 0 0 0 16.8 20.7a2 2 0 0 0 2.2-.7l1.4-2.6a1.2 1.2 0 0 0-1.3-1.8l-2.5.5a13 13 0 0 1-5-5l.5-2.5A1.2 1.2 0 0 0 10.3 2L7.7 3.4c-.4.2-.8.2-1.1.2Z"/></svg></div><span>电话</span></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#6FD4FF,#2A9BE8)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M4 5h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></svg></div><span>信息</span></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#B7BCC4,#7C828D)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M9 5 7.6 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-3.6L15 5H9Zm3 13a4.8 4.8 0 1 1 0-9.6 4.8 4.8 0 0 1 0 9.6Zm0-2a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Z"/></svg></div><span>相机</span></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#FFD166,#FF9F43)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 20.2 3.8 14.4a5.4 5.4 0 0 1 7.4-6.2l.8.7.8-.7a5.4 5.4 0 0 1 7.4 6.2Z"/></svg></div><span>相册</span></div>
+          <div class="app"><div class="app-ico" style="background:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.5 2" stroke-linecap="round"/></svg></div><span>时钟</span></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#7ED1FF,#3E9BF0)"><svg viewBox="0 0 24 24" fill="#fff"><circle cx="9" cy="10" r="3.2"/><path d="M3 18.5c.7-3 6-3 6 0M14 8h6M17 5v6M14.5 17.5c1-1.8 5.5-1.8 6.5 0"/></svg></div><span>天气</span></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#FF7A7A,#F04444)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M9 18V6.8l10-2v9.4" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="16.5" cy="14.2" r="2.6"/></svg></div><span>音乐</span></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#AEB6C0,#7C8694)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Zm0-5 1 2.2 2.4-.4.3 2.4 2.2 1-1 2.2 1 2.2-2.2 1-.3 2.4-2.4-.4-1 2.2-1-2.2-2.4.4-.3-2.4-2.2-1 1-2.2-1-2.2 2.2-1 .3-2.4 2.4.4Z"/></svg></div><span>设置</span></div>
+        </div>
+
+        <div class="dock">
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#6BC7FF,#2A7FE0)"><svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="1.8"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3Z"/></svg></div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#7BE08A,#27AE60)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M4 5h16a1 1 0 0 1 1 1.2l-1.6 11A2 2 0 0 1 17.4 19H8.6a2 2 0 0 1-2-1.6L3 6.2A1 1 0 0 1 4 5Z" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="m8 8 .8 7M13 8l-.8 7" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#FFD76B,#F5A623)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm2 5h10M7 13h7" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(135deg,#FF8FB0,#E84E7E)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 21s-7.5-4.7-9.6-9.2C1 8 3 4.8 6.4 4.8c2 0 3.5 1.1 4.3 2.6h2.6c.8-1.5 2.3-2.6 4.3-2.6 3.4 0 5.4 3.2 4 7C19.5 16.3 12 21 12 21Z"/></svg></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 视图：提醒设置页 ===== -->
+    <section class="screen" id="screen-settings">
+      <div class="set-top">
+        <svg class="mini-pig pig-svg" viewBox="0 0 200 210"><use href="#pigHero" xlink:href="#pigHero"/></svg>
+        <div class="ttl"><b>猪猪侠日程提醒</b><span>每天到点，准时喊你去做事</span></div>
+      </div>
+      <div class="set-body">
+        <div class="card">
+          <div class="card-h">我的每日提醒</div>
+          <div id="reminderList"></div>
+        </div>
+        <div class="card">
+          <div class="card-h">添加一条新提醒</div>
+          <div class="add-row">
+            <input type="time" id="newTime" value="08:00">
+            <input type="text" id="newContent" maxlength="30" placeholder="该做什么？如：喝水、写作业">
+            <button class="btn-add" id="btnAdd" aria-label="添加提醒">+</button>
+          </div>
+          <button class="btn-test" id="btnTest">
+            <svg viewBox="0 0 24 24" fill="#7A4B00"><path d="M12 2.5 14.3 8l5.9.5-4.5 3.9 1.4 5.8L12 15l-5.1 3.2 1.4-5.8L3.8 8.5 9.7 8Z"/></svg>
+            立即试播一次提醒效果
+          </button>
+        </div>
+        <p class="set-note">提醒保存在本浏览器中，每天循环生效。<br>想要真正放到手机桌面、应用关闭也能弹通知，请使用配套的安卓挂件工程（见随附《使用说明》）。</p>
+        <button class="set-back" id="btnBack">返回手机桌面</button>
+      </div>
+    </section>
+
+    <!-- ===== 通知横幅 ===== -->
+    <div class="banner" id="banner">
+      <svg class="banner-pig pig-svg" viewBox="0 0 200 210"><use href="#pigHero" xlink:href="#pigHero"/></svg>
+      <div class="banner-txt">
+        <div class="b-top"><b>猪猪侠提醒你</b><small id="bannerTime">现在</small></div>
+        <p id="bannerText">该做事情啦！</p>
+      </div>
+      <button class="banner-close" id="bannerClose" aria-label="关闭">×</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== 右侧说明 ========== -->
+<aside class="side">
+  <div class="side-card">
+    <h2>挂件会显示什么</h2>
+    <p>· 大号实时时钟和日期<br>· 距离现在最近的下一条提醒<br>· 到点时小猪弹出喊话并播放提示音<br>· 每条提醒都可以单独开关或删除</p>
+  </div>
+  <div class="side-card">
+    <h2>安卓真机版能力</h2>
+    <p>配套原生工程编译安装后，可以作为真正的桌面小组件添加：手机重启后自动恢复定时、应用关闭也能到点响铃通知，无需保持网页打开。</p>
+    <span class="tag">形象为粉丝风格手绘，仅供个人使用</span>
+  </div>
+</aside>
+
+<script>
+/* ================= 数据与存储 ================= */
+var STORE_KEY = 'pigHeroRemindersV1';
+var defaultReminders = [
+  {id:1, time:'07:30', content:'起床洗漱，精神满满', enabled:true},
+  {id:2, time:'12:00', content:'吃午饭，好好休息', enabled:true},
+  {id:3, time:'18:00', content:'吃晚饭啦', enabled:true},
+  {id:4, time:'21:30', content:'放下手机，准备睡觉', enabled:true}
+];
+var reminders = load();
+var firedKeys = {};
+function load(){
+  try{ var d = JSON.parse(localStorage.getItem(STORE_KEY)); if(d && d.length) return d; }catch(e){}
+  return defaultReminders.slice();
+}
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(reminders)); }
+function pad(n){ return (n<10?'0':'')+n; }
+function todayKey(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+
+/* ================= 页面元素 ================= */
+var listEl = document.getElementById('reminderList');
+var wClock = document.getElementById('wClock');
+var wDate  = document.getElementById('wDate');
+var wNext  = document.getElementById('wNext');
+var sbTime = document.getElementById('sbTime');
+var banner = document.getElementById('banner');
+var bannerText = document.getElementById('bannerText');
+var bannerTime = document.getElementById('bannerTime');
+var speech = document.getElementById('speechBubble');
+var bannerTimer = null, speechTimer = null;
+
+/* ================= 提醒列表渲染 ================= */
+function renderList(){
+  var sorted = reminders.slice().sort(function(a,b){return a.time<b.time?-1:1;});
+  listEl.innerHTML = '';
+  if(!sorted.length){
+    listEl.innerHTML = '<div class="empty-tip">还没有提醒<br>在下面添加一条，让猪猪侠盯着你吧</div>';
+    return;
+  }
+  sorted.forEach(function(r){
+    var item = document.createElement('div');
+    item.className = 'r-item' + (r.enabled?'':' off');
+    var t = document.createElement('div'); t.className='r-time'; t.textContent = r.time;
+    var c = document.createElement('div'); c.className='r-content'; c.textContent = r.content;
+    var sw = document.createElement('label'); sw.className='switch';
+    sw.innerHTML = '<input type="checkbox" '+(r.enabled?'checked':'')+'><i></i>';
+    sw.querySelector('input').addEventListener('change', function(){ r.enabled=this.checked; save(); renderList(); });
+    var del = document.createElement('button'); del.className='r-del'; del.textContent='×'; del.setAttribute('aria-label','删除');
+    del.addEventListener('click', function(){
+      reminders = reminders.filter(function(x){return x.id!==r.id;}); save(); renderList();
+    });
+    item.appendChild(t); item.appendChild(c); item.appendChild(sw); item.appendChild(del);
+    listEl.appendChild(item);
+  });
+}
+
+/* ================= 下一条提醒 ================= */
+function nextReminder(){
+  var now = new Date(); var hm = pad(now.getHours())+':'+pad(now.getMinutes());
+  var act = reminders.filter(function(r){return r.enabled;}).sort(function(a,b){return a.time<b.time?-1:1;});
+  for(var i=0;i<act.length;i++){ if(act[i].time > hm) return {r:act[i], day:'今天'}; }
+  return act.length ? {r:act[0], day:'明天'} : null;
+}
+
+/* ================= 时钟刷新 / 到点检测 ================= */
+var weekNames = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+function tick(){
+  var now = new Date();
+  var hm = pad(now.getHours())+':'+pad(now.getMinutes());
+  wClock.textContent = hm;
+  sbTime.textContent = hm;
+  wDate.textContent = weekNames[now.getDay()]+' · '+(now.getMonth()+1)+'月'+now.getDate()+'日';
+  var nx = nextReminder();
+  wNext.innerHTML = nx ? ('下一条 <b>'+nx.r.time+'</b> '+nx.r.content+'（'+nx.day+'）') : '今天没有安排，好好放松吧';
+  /* 到点触发 */
+  reminders.forEach(function(r){
+    var key = todayKey()+'_'+r.id+'_'+r.time;
+    if(r.enabled && r.time===hm && !firedKeys[key]){ firedKeys[key]=1; fire(r.content); }
+  });
+}
+
+/* ================= 提醒弹出 ================= */
+function fire(text){
+  bannerText.textContent = text;
+  bannerTime.textContent = '现在 · '+wClock.textContent;
+  banner.classList.add('show');
+  speech.textContent = text;
+  speech.classList.add('show');
+  playDingDong();
+  clearTimeout(bannerTimer); clearTimeout(speechTimer);
+  bannerTimer = setTimeout(function(){ banner.classList.remove('show'); }, 4500);
+  speechTimer = setTimeout(function(){ speech.classList.remove('show'); }, 9000);
+}
+/* 提示音（Web Audio 叮咚两声，被浏览器拦截时静默） */
+var audioCtx = null;
+function playDingDong(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    var notes=[{f:988,t:0},{f:784,t:.22},{f:1175,t:.44}];
+    notes.forEach(function(n){
+      var o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.type='sine'; o.frequency.value=n.f;
+      o.connect(g); g.connect(audioCtx.destination);
+      var st=audioCtx.currentTime+n.t;
+      g.gain.setValueAtTime(0.0001,st);
+      g.gain.exponentialRampToValueAtTime(0.25,st+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,st+0.35);
+      o.start(st); o.stop(st+0.4);
+    });
+  }catch(e){}
+}
+
+/* ================= 事件绑定 ================= */
+document.getElementById('widget').addEventListener('click', function(){
+  document.getElementById('screen-settings').classList.add('open');
+});
+document.getElementById('btnBack').addEventListener('click', function(){
+  document.getElementById('screen-settings').classList.remove('open');
+});
+document.getElementById('btnAdd').addEventListener('click', function(){
+  var t=document.getElementById('newTime').value;
+  var c=document.getElementById('newContent').value.trim() || '该做事情啦';
+  if(!t) return;
+  var id = reminders.length ? Math.max.apply(null, reminders.map(function(r){return r.id;}))+1 : 1;
+  reminders.push({id:id,time:t,content:c,enabled:true});
+  save(); renderList();
+  document.getElementById('newContent').value='';
+});
+document.getElementById('btnTest').addEventListener('click', function(){
+  document.getElementById('screen-settings').classList.remove('open');
+  fire('（测试）猪猪侠报到！该做下一件事啦');
+});
+document.getElementById('bannerClose').addEventListener('click', function(){
+  banner.classList.remove('show');
+});
+
+/* ================= 启动 ================= */
+renderList();
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
