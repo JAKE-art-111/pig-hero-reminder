@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pig_red">#E8352B</color>
+    <color name="pig_red_dark">#C4271F</color>
+    <color name="pig_yellow">#FFD23F</color>
+    <color name="page_bg">#FFF7F0</color>
+    <color name="ink">#3A2A2A</color>
+    <color name="ink_soft">#8A7068</color>
+    <color name="ic_launcher_background">#BFE6FF</color>
+</resources>

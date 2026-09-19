@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 通知栏小图标：Android 要求白色半透明剪影 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 耳朵 -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M5.5,9 L2.6,3.2 L9.2,5.8 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M18.5,9 L21.4,3.2 L14.8,5.8 Z" />
+
+    <!-- 圆脸 + 两个鼻孔（evenOdd 挖空） -->
+    <path android:fillColor="#FFFFFF" android:fillType="evenOdd"
+        android:pathData="M4.8,13.5 a7.2,7.2 0 1,0 14.4,0 a7.2,7.2 0 1,0 -14.4,0 Z
+                           M9.4,14.8 a1,1.5 0 1,0 2,0 a1,1.5 0 1,0 -2,0 Z
+                           M12.6,14.8 a1,1.5 0 1,0 2,0 a1,1.5 0 1,0 -2,0 Z" />
+
+    <!-- 鼻子轮廓 -->
+    <path android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF" android:strokeWidth="1.2"
+        android:pathData="M8.7,14.6 a3.3,2.4 0 1,0 6.6,0 a3.3,2.4 0 1,0 -6.6,0 Z" />
+</vector>

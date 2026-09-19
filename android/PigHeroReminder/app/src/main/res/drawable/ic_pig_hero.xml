@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="76dp"
+    android:viewportWidth="200"
+    android:viewportHeight="210">
+
+    <!-- 披风 -->
+    <path android:fillColor="#D42B22"
+        android:pathData="M58,92 C34,118 38,170 46,184 C66,164 80,156 88,153 L112,153 C120,156 134,164 154,184 C162,170 166,118 142,92 Z" />
+    <path android:fillColor="#B81F18" android:fillAlpha="0.55"
+        android:pathData="M88,153 L100,158 L112,153 L108,182 Q100,188 92,182 Z" />
+
+    <!-- 手臂 -->
+    <path android:fillColor="#F5B800"
+        android:pathData="M44,166 a13,16 0 1,0 26,0 a13,16 0 1,0 -26,0 Z" />
+    <path android:fillColor="#F5B800"
+        android:pathData="M130,166 a13,16 0 1,0 26,0 a13,16 0 1,0 -26,0 Z" />
+
+    <!-- 身体（黄衣） -->
+    <path android:fillColor="#FFD23F" android:strokeColor="#E8A800" android:strokeWidth="2.5"
+        android:pathData="M55,172 a45,37 0 1,0 90,0 a45,37 0 1,0 -90,0 Z" />
+
+    <!-- 领口 -->
+    <path android:fillColor="#E8352B"
+        android:pathData="M82,142 Q100,154 118,142 L118,150 Q100,161 82,150 Z" />
+
+    <!-- 胸口徽章 -->
+    <path android:fillColor="#E8352B"
+        android:pathData="M84,176 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M91,176 a9,6.6 0 1,0 18,0 a9,6.6 0 1,0 -18,0 Z" />
+    <path android:fillColor="#E8352B"
+        android:pathData="M94.8,176 a1.7,1.7 0 1,0 3.4,0 a1.7,1.7 0 1,0 -3.4,0 Z" />
+    <path android:fillColor="#E8352B"
+        android:pathData="M101.8,176 a1.7,1.7 0 1,0 3.4,0 a1.7,1.7 0 1,0 -3.4,0 Z" />
+
+    <!-- 耳朵 -->
+    <path android:fillColor="#FFC2CD"
+        android:pathData="M62,54 Q54,18 80,26 Q88,37 80,58 Z" />
+    <path android:fillColor="#FF9BAC"
+        android:pathData="M68,48 Q66,30 77,34 Q81,41 76,51 Z" />
+    <path android:fillColor="#FFC2CD"
+        android:pathData="M138,54 Q146,18 120,26 Q112,37 120,58 Z" />
+    <path android:fillColor="#FF9BAC"
+        android:pathData="M132,48 Q134,30 123,34 Q119,41 124,51 Z" />
+
+    <!-- 脸 -->
+    <path android:fillColor="#FFC2CD" android:strokeColor="#F09AA8" android:strokeWidth="2.5"
+        android:pathData="M37,101 a63,63 0 1,0 126,0 a63,63 0 1,0 -126,0 Z" />
+
+    <!-- 红色英雄面罩 -->
+    <path android:fillColor="#E8352B"
+        android:pathData="M37,92 C37,43 66,29 100,29 C134,29 163,43 163,92 L139,92 C137,78 128,69 117,71 C110,72 106,80 105,89 C104,80 100,74 100,74 C100,74 96,80 95,89 C94,80 90,72 83,71 C72,69 63,78 61,92 Z" />
+    <path android:fillColor="#FFD23F"
+        android:pathData="M92.5,40 a7.5,7.5 0 1,0 15,0 a7.5,7.5 0 1,0 -15,0 Z" />
+    <path android:fillColor="#FFF0B8"
+        android:pathData="M95.1,37.5 a2.4,2.4 0 1,0 4.8,0 a2.4,2.4 0 1,0 -4.8,0 Z" />
+
+    <!-- 眼睛 -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M64.5,85 a12.5,10.5 0 1,0 25,0 a12.5,10.5 0 1,0 -25,0 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M110.5,85 a12.5,10.5 0 1,0 25,0 a12.5,10.5 0 1,0 -25,0 Z" />
+    <path android:fillColor="#3A2A2A"
+        android:pathData="M73.9,87 a5.6,5.6 0 1,0 11.2,0 a5.6,5.6 0 1,0 -11.2,0 Z" />
+    <path android:fillColor="#3A2A2A"
+        android:pathData="M114.9,87 a5.6,5.6 0 1,0 11.2,0 a5.6,5.6 0 1,0 -11.2,0 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M79.4,84.5 a2.1,2.1 0 1,0 4.2,0 a2.1,2.1 0 1,0 -4.2,0 Z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M120.4,84.5 a2.1,2.1 0 1,0 4.2,0 a2.1,2.1 0 1,0 -4.2,0 Z" />
+
+    <!-- 腮红 -->
+    <path android:fillColor="#FF8DA0" android:fillAlpha="0.55"
+        android:pathData="M46.5,119 a8.5,8.5 0 1,0 17,0 a8.5,8.5 0 1,0 -17,0 Z" />
+    <path android:fillColor="#FF8DA0" android:fillAlpha="0.55"
+        android:pathData="M136.5,119 a8.5,8.5 0 1,0 17,0 a8.5,8.5 0 1,0 -17,0 Z" />
+
+    <!-- 鼻子 -->
+    <path android:fillColor="#FFE3D6" android:strokeColor="#F0B09C" android:strokeWidth="2.5"
+        android:pathData="M70,123 a30,21.5 0 1,0 60,0 a30,21.5 0 1,0 -60,0 Z" />
+    <path android:fillColor="#D96A58"
+        android:pathData="M83.5,124 a5,7.2 0 1,0 10,0 a5,7.2 0 1,0 -10,0 Z" />
+    <path android:fillColor="#D96A58"
+        android:pathData="M106.5,124 a5,7.2 0 1,0 10,0 a5,7.2 0 1,0 -10,0 Z" />
+
+    <!-- 微笑 -->
+    <path android:fillColor="#00000000" android:strokeColor="#B4453E" android:strokeWidth="3.6"
+        android:strokeLineCap="round"
+        android:pathData="M83,149 Q100,162 117,149" />
+</vector>

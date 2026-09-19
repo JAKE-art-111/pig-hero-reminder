@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">猪猪侠提醒</string>
+    <string name="widget_description">猪猪侠每日定时提醒挂件：到点喊你做该做的事</string>
+    <string name="title_main">猪猪侠日程提醒</string>
+    <string name="subtitle_main">每天到点，准时喊你去做事</string>
+    <string name="section_my">我的每日提醒</string>
+    <string name="section_add">添加一条新提醒</string>
+    <string name="hint_content">该做什么？如：喝水、写作业</string>
+    <string name="btn_add">＋ 添加提醒</string>
+    <string name="btn_test">立即试播一次提醒效果</string>
+    <string name="btn_done">完成</string>
+    <string name="empty_list">还没有提醒，在下面添加一条吧</string>
+    <string name="note_footer">提醒保存在手机本地，每天循环生效。\n若到点没有响铃：请在系统设置中允许本应用“自启动”，并在电池管理中设为“不限制后台”。</string>
+    <string name="toast_added">已添加，猪猪侠记住啦</string>
+    <string name="cd_delete">删除这条提醒</string>
+    <string name="cd_pig">猪猪侠</string>
+</resources>
